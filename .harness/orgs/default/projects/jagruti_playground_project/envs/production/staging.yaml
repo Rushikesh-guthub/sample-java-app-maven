@@ -1,0 +1,8 @@
+environment:
+  name: staging
+  identifier: staging
+  description: ""
+  tags: {}
+  type: Production
+  orgIdentifier: default
+  projectIdentifier: jagruti_playground_project
