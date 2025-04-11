@@ -74,3 +74,4 @@ pipeline:
                     tags:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
+                    context: zenzbg-template/greetings
