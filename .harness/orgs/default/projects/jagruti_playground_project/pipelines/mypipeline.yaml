@@ -13,7 +13,6 @@ pipeline:
     - stage:
         name: build
         identifier: build
-        description: ""
         type: CI
         spec:
           cloneCodebase: true
@@ -75,3 +74,29 @@ pipeline:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
                     context: zenzbg-template/greetings
+          sharedPaths:
+            - /var/run
+    - stage:
+        name: deploy
+        identifier: deploy
+        type: CI
+        spec:
+          cloneCodebase: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run Docker Container
+                  identifier: run_docker_container
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "Pulling image and running container"
+                      docker pull rushiops/demo-harness:latest
+                      docker run -d -p 8080:8080 --name greetings rushiops/demo-harness:latest
