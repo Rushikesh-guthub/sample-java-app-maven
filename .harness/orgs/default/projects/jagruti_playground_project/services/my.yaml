@@ -1,0 +1,24 @@
+service:
+  name: service
+  identifier: service
+  serviceDefinition:
+    type: Kubernetes
+    spec:
+      manifests:
+        - manifest:
+            identifier: k8smanifest
+            type: K8sManifest
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: gitconnector
+                  gitFetchType: Branch
+                  paths:
+                    - sample-java-app-maven/zenzbg-template /greetings
+                  branch: main
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
+  gitOpsEnabled: false
+  orgIdentifier: default
+  projectIdentifier: jagruti_playground_project
