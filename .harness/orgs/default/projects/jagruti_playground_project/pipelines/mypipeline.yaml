@@ -37,16 +37,39 @@ pipeline:
                     command: |-
                       echo "building java application"
                       mvn -B package --file zenzbg-template/greetings/pom.xml
+              - parallel:
+                  - step:
+                      type: OsvScanner
+                      name: OsvScanner_1
+                      identifier: OsvScanner_1
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: repository
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
+                  - step:
+                      type: Owasp
+                      name: Owasp_1
+                      identifier: Owasp_1
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: repository
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
               - step:
-                  type: OsvScanner
-                  name: OsvScanner_1
-                  identifier: OsvScanner_1
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
                   spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      type: repository
-                      detection: auto
-                    advanced:
-                      log:
-                        level: info
+                    connectorRef: dockerconnector
+                    repo: rushiops/demo-harness
+                    tags:
+                      - latest
