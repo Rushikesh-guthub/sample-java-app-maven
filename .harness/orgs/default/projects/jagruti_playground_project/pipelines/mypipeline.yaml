@@ -37,3 +37,16 @@ pipeline:
                     command: |-
                       echo "building java application"
                       mvn -B package --file zenzbg-template/greetings/pom.xml
+              - step:
+                  type: OsvScanner
+                  name: OsvScanner_1
+                  identifier: OsvScanner_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
