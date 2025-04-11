@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-java
+  template:
+    metadata:
+      labels:
+        app: demo-java
+    spec:
+      containers:
+        - name: java-app
+          image: 46990406/demo-harness:latest
+          ports:
+            - containerPort: 8080
