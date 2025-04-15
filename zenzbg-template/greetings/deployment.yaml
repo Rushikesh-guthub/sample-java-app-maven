@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: java-app
-          image: 46990406/demo-harness:latest
+          image: rushiops/demo-harness:latest
           ports:
             - containerPort: 8080
