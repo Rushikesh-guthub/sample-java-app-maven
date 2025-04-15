@@ -87,26 +87,44 @@ pipeline:
           sharedPaths:
             - /var/run
     - stage:
-        name: deploy
-        identifier: deploy
-        type: CI
+        name: deployment
+        identifier: deployment
+        description: ""
+        type: Deployment
         spec:
-          cloneCodebase: false
-          platform:
-            os: Linux
-            arch: Amd64
-          runtime:
-            type: Cloud
-            spec: {}
+          deploymentType: Kubernetes
+          gitOpsEnabled: true
+          service:
+            serviceRef: myservice
           execution:
             steps:
               - step:
-                  type: Run
-                  name: Run Docker Container
-                  identifier: run_docker_container
+                  type: GitOpsUpdateReleaseRepo
+                  name: Update Release Repo
+                  identifier: updateReleaseRepo
+                  timeout: 10m
+                  spec: {}
+              - step:
+                  type: MergePR
+                  name: Merge PR
+                  identifier: mergePR
                   spec:
-                    shell: Sh
-                    command: |-
-                      echo "Pulling image and running container"
-                      docker pull rushiops/demo-harness:latest
-                      docker run -d -p 8080:8080 --name greetings rushiops/demo-harness:latest
+                    deleteSourceBranch: true
+                  timeout: 10m
+              - step:
+                  type: GitOpsFetchLinkedApps
+                  name: Fetch Linked Apps
+                  identifier: fetchLinkedApps
+                  timeout: 10m
+                  spec: {}
+            rollbackSteps: []
+          environment:
+            environmentRef: EnvJagruti
+            deployToAll: true
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
