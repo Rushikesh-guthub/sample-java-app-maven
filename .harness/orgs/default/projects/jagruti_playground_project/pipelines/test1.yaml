@@ -20,12 +20,6 @@ pipeline:
           caching:
             enabled: true
             override: true
-          platform:
-            os: Linux
-            arch: Amd64
-          runtime:
-            type: Docker
-            spec: {}
           execution:
             steps:
               - step:
@@ -68,3 +62,11 @@ pipeline:
                       sudo docker run -d --name demo-harness -p 8080:8080 46990406/demo-harness:latest
                     envVariables:
                       key: <+secrets.getValue("azure-key-file")>
+          infrastructure:
+            type: VM
+            spec:
+              type: Pool
+              spec:
+                poolName: myvm
+                harnessImageConnectorRef: dockerconnector
+                os: Linux
