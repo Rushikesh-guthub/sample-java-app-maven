@@ -97,6 +97,8 @@ pipeline:
           sharedPaths:
             - /var/run
         description: ""
+        when:
+          pipelineStatus: Success
     - stage:
         name: deployment
         identifier: deployment
