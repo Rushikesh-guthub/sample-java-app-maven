@@ -74,6 +74,16 @@ pipeline:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
                     context: zenzbg-template/greetings
+              - step:
+                  type: Run
+                  name: Run_2
+                  identifier: Run_2
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "Pulling image and running container"
+                      docker pull rushiops/demo-harness:latest
+                      docker run -d -p 8080:8080 --name greetings rushiops/demo-harness:latest
           sharedPaths:
             - /var/run
     - stage:
