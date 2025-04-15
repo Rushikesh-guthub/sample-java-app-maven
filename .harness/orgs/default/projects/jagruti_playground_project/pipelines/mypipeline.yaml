@@ -23,7 +23,7 @@ pipeline:
             os: Linux
             arch: Amd64
           runtime:
-            type: Cloud
+            type: Docker
             spec: {}
           execution:
             steps:
@@ -81,50 +81,19 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |-
-                      echo "Pulling image and running container"
-                      docker pull rushiops/demo-harness:latest
-                      docker run -d -p 8080:8080 --name greetings rushiops/demo-harness:latest
+                      echo "$key" > key2.pem
+                      chmod 400 key2.pem
+                      ssh -i key2.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null vm@20.244.32.79
+                      whoami
+                      curl ifconfig.io
+                      docker -v
+                      cat /etc/os-release
+                      pwd
+                      echo "Pulling image "
+                      sudo docker pull 46990406/demo-harness:latest
+                      sudo docker run -d --name demo-harness -p 8080:8080 46990406/demo-harness:latest
+                    envVariables:
+                      key: <+secrets.getValue("azure-key-file")>
           sharedPaths:
             - /var/run
-    - stage:
-        name: deployment
-        identifier: deployment
         description: ""
-        type: Deployment
-        spec:
-          deploymentType: Kubernetes
-          gitOpsEnabled: true
-          service:
-            serviceRef: myservice
-          execution:
-            steps:
-              - step:
-                  type: GitOpsUpdateReleaseRepo
-                  name: Update Release Repo
-                  identifier: updateReleaseRepo
-                  timeout: 10m
-                  spec: {}
-              - step:
-                  type: MergePR
-                  name: Merge PR
-                  identifier: mergePR
-                  spec:
-                    deleteSourceBranch: true
-                  timeout: 10m
-              - step:
-                  type: GitOpsFetchLinkedApps
-                  name: Fetch Linked Apps
-                  identifier: fetchLinkedApps
-                  timeout: 10m
-                  spec: {}
-            rollbackSteps: []
-          environment:
-            environmentRef: EnvJagruti
-            deployToAll: true
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: StageRollback
