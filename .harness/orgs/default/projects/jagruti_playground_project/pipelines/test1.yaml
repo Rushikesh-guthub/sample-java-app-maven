@@ -1,0 +1,70 @@
+pipeline:
+  name: test-1
+  identifier: test1
+  projectIdentifier: jagruti_playground_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: gitconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Docker
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "building java application"
+                      mvn -B package --file zenzbg-template/greetings/pom.xml
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerconnector
+                    repo: rushiops/demo-harness
+                    tags:
+                      - latest
+              - step:
+                  type: Run
+                  name: Run_2
+                  identifier: Run_2
+                  spec:
+                    connectorRef: dockerconnector
+                    image: rushiops/demo-harness
+                    shell: Sh
+                    command: |-
+                      echo "$key" > key2.pem
+                      chmod 400 key2.pem
+                      ssh -i key2.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null vm@20.244.32.79
+                      whoami
+                      curl ifconfig.io
+                      docker -v
+                      cat /etc/os-release
+                      pwd
+                      echo "Pulling image "
+                      sudo docker pull 46990406/demo-harness:latest
+                      sudo docker run -d --name demo-harness -p 8080:8080 46990406/demo-harness:latest
+                    envVariables:
+                      key: <+secrets.getValue("azure-key-file")>
