@@ -97,3 +97,37 @@ pipeline:
           sharedPaths:
             - /var/run
         description: ""
+    - stage:
+        name: deployment
+        identifier: deployment
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          echo "$key" > key2.pem
+                          chmod 400 key2.pem
+                          ssh -i key2.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null vm@20.244.32.79
+                          whoami
+                          curl ifconfig.io
+                          docker -v
+                          cat /etc/os-release
+                          pwd
+                          echo "Pulling image "
+                          sudo docker pull 46990406/demo-harness:latest
+                          sudo docker run -d --name demo-harness -p 8080:8080 46990406/demo-harness:latest
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+        tags: {}
