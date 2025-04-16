@@ -1,0 +1,74 @@
+pipeline:
+  name: k8s
+  identifier: k8s
+  projectIdentifier: jagruti_playground_project
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: k8s
+        identifier: k8s
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: k8sservice
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
+          environment:
+            environmentRef: minikubeenv
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: minkubeinfra
+          execution:
+            steps:
+              - step:
+                  type: K8sApply
+                  name: K8sApply_1
+                  identifier: K8sApply_1
+                  spec:
+                    skipDryRun: true
+                    skipSteadyStateCheck: true
+                    skipRendering: true
+                    overrides:
+                      - manifest:
+                          identifier: manifestfile
+                          type: KustomizePatches
+                          spec:
+                            store:
+                              type: Github
+                              spec:
+                                connectorRef: gitconnector
+                                gitFetchType: Branch
+                                paths:
+                                  - zenzbg-template/Manifest-file
+                                branch: main
+                    manifestSource:
+                      type: K8sManifest
+                      spec:
+                        store:
+                          type: Github
+                          spec:
+                            connectorRef: gitconnector
+                            paths:
+                              - zenzbg-template/Manifest-file
+                            gitFetchType: Branch
+                            branch: main
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        delegateSelectors:
+          - helm-delegate
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: PipelineRollback
