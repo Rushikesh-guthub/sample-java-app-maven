@@ -30,37 +30,12 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: K8sApply
-                  name: K8sApply_1
-                  identifier: K8sApply_1
+                  type: K8sRollingDeploy
+                  name: K8sRollingDeploy_1
+                  identifier: K8sRollingDeploy_1
                   spec:
-                    skipDryRun: true
-                    skipSteadyStateCheck: true
-                    skipRendering: true
-                    overrides:
-                      - manifest:
-                          identifier: manifestfiles
-                          type: Values
-                          spec:
-                            store:
-                              type: Github
-                              spec:
-                                connectorRef: gitconnector
-                                gitFetchType: Branch
-                                paths:
-                                  - zenzbg-template/Manifest-file
-                                branch: main
-                    manifestSource:
-                      type: K8sManifest
-                      spec:
-                        store:
-                          type: Github
-                          spec:
-                            connectorRef: gitconnector
-                            paths:
-                              - zenzbg-template/Manifest-file
-                            gitFetchType: Branch
-                            branch: main
+                    skipDryRun: false
+                    pruningEnabled: true
                   timeout: 10m
             rollbackSteps: []
         tags: {}
