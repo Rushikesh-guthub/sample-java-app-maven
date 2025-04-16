@@ -39,8 +39,8 @@ pipeline:
                     skipRendering: true
                     overrides:
                       - manifest:
-                          identifier: manifestfile
-                          type: KustomizePatches
+                          identifier: manifestfiles
+                          type: Values
                           spec:
                             store:
                               type: Github
