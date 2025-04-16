@@ -81,9 +81,9 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |-
-                      echo "$key" > key2.pem
-                      chmod 400 key2.pem
-                      ssh -i key2.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@54.204.105.70
+                      echo "$key" > key3.pem
+                      chmod 400 key3.pem
+                      ssh -i key3.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@54.204.105.70
                       whoami
                       curl ifconfig.io
                       docker -v
@@ -127,9 +127,9 @@ pipeline:
                           #!/bin/bash
 
 
-                          echo "$key" > key2.pem
-                          chmod 400 key2.pem
-                          ssh -i key2.pem -o StrictHostKeyChecking=no ubuntu@54.204.105.70 <<EOF
+                          echo "$key" > key3.pem
+                          chmod 400 key3.pem
+                          ssh -i key3.pem -o StrictHostKeyChecking=no ubuntu@54.204.105.70 <<EOF
                           echo "Connected to EC2."
                           curl ifconfig.io
                           whoami
