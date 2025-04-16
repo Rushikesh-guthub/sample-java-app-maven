@@ -74,26 +74,6 @@ pipeline:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
                     context: zenzbg-template/greetings
-              - step:
-                  type: Run
-                  name: Run_2
-                  identifier: Run_2
-                  spec:
-                    shell: Sh
-                    command: |-
-                      echo "$key" > key3.pem
-                      chmod 400 key3.pem
-                      ssh -i key3.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@54.204.105.70
-                      whoami
-                      curl ifconfig.io
-                      docker -v
-                      cat /etc/os-release
-                      pwd
-                      echo "Pulling image "
-                      sudo docker pull rushiops/demo-harness:latest
-                      sudo docker run -d --name demo-harness -p 8080:8080 rushiops/demo-harness:latest
-                    envVariables:
-                      key: <+secrets.getValue("azure-key-file")>
           sharedPaths:
             - /var/run
         description: ""
