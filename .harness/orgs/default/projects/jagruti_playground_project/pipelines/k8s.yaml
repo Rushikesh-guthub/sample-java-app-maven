@@ -6,14 +6,14 @@ pipeline:
   tags: {}
   stages:
     - stage:
-        name: k8s
-        identifier: k8s
+        name: deployment
+        identifier: deployment
         description: ""
         type: Deployment
         spec:
           deploymentType: Kubernetes
           service:
-            serviceRef: service
+            serviceRef: k8sservice
             serviceInputs:
               serviceDefinition:
                 type: Kubernetes
@@ -26,40 +26,29 @@ pipeline:
             environmentRef: minikubeenv
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: minkubeinfra
+              - identifier: myinfra
           execution:
             steps:
               - step:
-                  type: K8sApply
-                  name: K8sApply_1
-                  identifier: K8sApply_1
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: K8sRollingDeploy
+                  timeout: 10m
                   spec:
                     skipDryRun: false
-                    skipSteadyStateCheck: false
-                    skipRendering: false
-                    overrides:
-                      - manifest:
-                          identifier: manifestfile
-                          type: KustomizePatches
-                          spec:
-                            store:
-                              type: Github
-                              spec:
-                                connectorRef: gitconnector
-                                gitFetchType: Branch
-                                paths:
-                                  - zenzbg-template/Manifest-file
-                                branch: main
-                    filePaths:
-                      - zenzbg-template/Manifest-file
+                    pruningEnabled: false
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: K8sRollingRollback
                   timeout: 10m
-            rollbackSteps: []
+                  spec:
+                    pruningEnabled: false
         tags: {}
-        delegateSelectors:
-          - helm-delegate
         failureStrategies:
           - onFailure:
               errors:
                 - AllErrors
               action:
-                type: PipelineRollback
+                type: StageRollback
