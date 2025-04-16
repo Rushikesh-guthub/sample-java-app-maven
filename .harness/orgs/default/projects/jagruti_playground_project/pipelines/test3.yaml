@@ -1,0 +1,109 @@
+pipeline:
+  name: test-3
+  identifier: test3
+  projectIdentifier: jagruti_playground_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: gitconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "building java application"
+                      mvn -B package --file zenzbg-template/greetings/pom.xml
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerconnector
+                    repo: rushiops/demo-harness
+                    tags:
+                      - latest
+                    dockerfile: zenzbg-template/greetings/Dockerfile
+                    context: zenzbg-template/greetings
+    - stage:
+        name: deployment
+        identifier: deployment
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Ssh
+          service:
+            serviceRef: javaappservice
+          environment:
+            environmentRef: envjavaapp
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: azurevmtypeinfra
+          execution:
+            steps:
+              - step:
+                  type: ShellScriptProvision
+                  name: ShellScriptProvision_1
+                  identifier: ShellScriptProvision_1
+                  spec:
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          #!/bin/bash
+
+
+                          echo "$key" > key3.pem
+                          chmod 400 key3.pem
+                          ssh -i key3.pem -o StrictHostKeyChecking=no ubuntu@54.204.105.70 <<EOF
+                          echo "Connected to EC2."
+                          curl ifconfig.io
+                          whoami
+                          cat /etc/os-release
+                          pwd
+                          echo "Pulling image "
+                          sudo docker pull rushiops/demo-harness:latest
+                          sudo docker stop demo-harness 
+                          sudo docker rm demo-harness
+                          sudo docker run -d --name demo-harness -p 8080:8080 rushiops/demo-harness:latest
+                          EOF 
+                    environmentVariables:
+                      - name: key
+                        type: String
+                        value: <+secrets.getValue("azure-key-file")>
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: ManualIntervention
+                spec:
+                  timeout: 1d
+        delegateSelectors:
+          - docker-delegate-new
