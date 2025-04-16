@@ -13,7 +13,7 @@ pipeline:
         spec:
           deploymentType: Kubernetes
           service:
-            serviceRef: k8sservice
+            serviceRef: service
             serviceInputs:
               serviceDefinition:
                 type: Kubernetes
@@ -30,12 +30,28 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: K8sRollingDeploy
-                  name: K8sRollingDeploy_1
-                  identifier: K8sRollingDeploy_1
+                  type: K8sApply
+                  name: K8sApply_1
+                  identifier: K8sApply_1
                   spec:
                     skipDryRun: false
-                    pruningEnabled: true
+                    skipSteadyStateCheck: false
+                    skipRendering: false
+                    overrides:
+                      - manifest:
+                          identifier: manifestfile
+                          type: KustomizePatches
+                          spec:
+                            store:
+                              type: Github
+                              spec:
+                                connectorRef: gitconnector
+                                gitFetchType: Branch
+                                paths:
+                                  - zenzbg-template/Manifest-file
+                                branch: main
+                    filePaths:
+                      - zenzbg-template/Manifest-file
                   timeout: 10m
             rollbackSteps: []
         tags: {}
