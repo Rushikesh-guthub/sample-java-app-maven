@@ -132,4 +132,9 @@ pipeline:
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
+          environment:
+            environmentRef: envjavaapp
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: azurevmtypeinfra
         tags: {}
