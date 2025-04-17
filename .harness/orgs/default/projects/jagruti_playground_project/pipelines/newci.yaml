@@ -46,5 +46,6 @@ pipeline:
                     image: rushiops/demo-harness
                     shell: Sh
                     command: |-
+                      cd zenzbg-template/greetings
                       echo "Starting Maven Build"
                       mvn clean install
