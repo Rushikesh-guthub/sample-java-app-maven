@@ -33,7 +33,7 @@ pipeline:
                   name: BuildAndPushDockerRegistry_1
                   identifier: BuildAndPushDockerRegistry_1
                   spec:
-                    connectorRef: dockerconnector
+                    connectorRef: Dockerhubjagruti
                     repo: rushiops/demo-harness
                     tags:
                       - latest
