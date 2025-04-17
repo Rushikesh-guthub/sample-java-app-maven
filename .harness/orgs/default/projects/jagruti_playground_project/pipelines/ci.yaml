@@ -30,11 +30,11 @@ pipeline:
             steps:
               - step:
                   type: BuildAndPushDockerRegistry
-                  name: BuildAndPushDockerRegistry_1
-                  identifier: BuildAndPushDockerRegistry_1
+                  name: Build and Push to JFrog Docker
+                  identifier: Build_and_push_to_JFrog_Docker
                   spec:
-                    connectorRef: dockerconnector
-                    repo: rushiops/demo-harness
+                    connectorRef: docker-local-docker
+                    repo: docker-local-docker/demo-harness
                     tags:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
