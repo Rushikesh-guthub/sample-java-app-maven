@@ -34,7 +34,7 @@ pipeline:
                   identifier: Build_and_push_to_JFrog_Docker
                   spec:
                     connectorRef: docker-local-docker
-                    repo: docker-local-docker/demo-harness
+                    repo: rushiops/demo-harness
                     tags:
                       - latest
                     dockerfile: zenzbg-template/greetings/Dockerfile
