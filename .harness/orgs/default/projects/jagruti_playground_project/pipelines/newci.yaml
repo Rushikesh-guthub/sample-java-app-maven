@@ -30,6 +30,15 @@ pipeline:
             steps:
               - step:
                   type: Run
+                  name: Run_2
+                  identifier: Run_2
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "Starting Maven Build"
+                      mvn clean install
+              - step:
+                  type: Run
                   name: Run_1
                   identifier: Run_1
                   spec:
