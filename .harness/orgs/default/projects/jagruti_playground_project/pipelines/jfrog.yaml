@@ -29,10 +29,13 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: ArtifactoryUpload
-                  name: ArtifactoryUpload_1
-                  identifier: ArtifactoryUpload_1
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
                   spec:
-                    connectorRef: dockerlocaldocker
-                    target: docker-local-docker/rushiops/demo-harness/1.0.0/
-                    sourcePath: target/demo-harness.jar
+                    connectorRef: dockerconnector
+                    repo: rushiops/demo-harness
+                    tags:
+                      - latest
+                    dockerfile: zenzbg-template/greetings/Dockerfile
+                    context: zenzbg-template/greetings
