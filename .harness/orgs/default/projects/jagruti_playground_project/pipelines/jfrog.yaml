@@ -34,5 +34,5 @@ pipeline:
                   identifier: ArtifactoryUpload_1
                   spec:
                     connectorRef: dockerlocaldocker
-                    target: rushiops/demo-harness
-                    sourcePath: docker-local-docker/
+                    target: docker-local-docker/rushiops/demo-harness/1.0.0/
+                    sourcePath: target/demo-harness.jar
