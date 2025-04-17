@@ -37,5 +37,5 @@ pipeline:
                     repo: rushiops/demo-harness
                     tags:
                       - latest
-                    dockerfile: zenzbg-template/greetings
+                    dockerfile: zenzbg-template/greetings/Dockerfile
                     context: zenzbg-template/greetings
