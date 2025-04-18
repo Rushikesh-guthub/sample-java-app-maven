@@ -60,5 +60,5 @@ pipeline:
                   identifier: ArtifactoryUpload_1
                   spec:
                     connectorRef: rushiopslocaldocker
-                    target: harness-generic-local/java-apps/greetings-1.0.0.jar
+                    target: generic-local/java-apps/greetings-1.0.0.jar
                     sourcePath: zenzbg-template/greetings/target/greetings-1.0.0.jar
