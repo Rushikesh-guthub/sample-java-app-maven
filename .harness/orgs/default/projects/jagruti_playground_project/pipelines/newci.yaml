@@ -13,6 +13,7 @@ pipeline:
     - stage:
         name: build
         identifier: build
+        description: ""
         type: CI
         spec:
           cloneCodebase: true
@@ -34,22 +35,27 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |-
-                      echo "🔨 Building Maven project..."
+                      echo "🔨 Starting Maven Build..."
                       cd zenzbg-template/greetings
                       mvn clean install
               - step:
-                  type: Plugin
-                  name: Upload to JFrog
+                  type: Run
+                  name: Upload to JFrog Artifactory
                   identifier: upload_to_jfrog
                   spec:
-                    connectorRef: account.harnessImage
-                    image: plugins/artifactory
-                    settings:
-                      access_token: <+secrets.getValue("jfrog_access_token")>
-                      url: https://rushiops.jfrog.io/artifactory
-                      source: zenzbg-template/greetings/target/greetings-1.0.0.jar
-                      target: harness-generic-local/java-apps/greetings-1.0.0.jar
-                      build_name: <+pipeline.identifier>
-                      build_number: <+pipeline.sequenceId>
-                      publish_build_info: true
-                      targetProps: project=greetings;env=dev
+                    shell: Sh
+                    command: |-
+                      echo "⬇️ Installing JFrog CLI..."
+                      curl -fL https://getcli.jfrog.io | sh
+                      chmod +x jfrog
+                      mv jfrog /usr/local/bin/jfrog
+                      export JFROG_CLI_OFFER_CONFIG=false
+
+                      echo "🚀 Uploading artifact to JFrog..."
+                      jfrog rt u \
+                        "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
+                        "harness-generic-local/java-apps/" \
+                        --access-token <+secrets.getValue("j-token")> \
+                        --build-name <+pipeline.identifier> \
+                        --build-number <+pipeline.sequenceId> \
+                        --target-props "project=greetings;env=dev"
