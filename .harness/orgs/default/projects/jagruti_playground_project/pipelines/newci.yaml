@@ -40,11 +40,9 @@ pipeline:
                       # Step 1: Build the project with Maven
                       echo "Starting Maven Build"
                       mvn clean install
-              - step:
-                  type: ArtifactoryUpload
-                  name: ArtifactoryUpload_1
-                  identifier: ArtifactoryUpload_1
-                  spec:
-                    connectorRef: rushiopslocaldocker
-                    target: harness-generic-local/java-apps/greetings-1.0.0.jar
-                    sourcePath: zenzbg-template/greetings/target/greetings-1.0.0.jar
+
+                      jfrog rt u --url https://https://rushiops.jfrog.io/ \
+                                 --user rushikesh.ghutke@neosoftmail.com \
+                                 --password Rushiops@123 \
+                                 "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
+                                 "harness-generic-local/java-apps/greetings-1.0.0.jar"
