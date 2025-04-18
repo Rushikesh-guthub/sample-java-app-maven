@@ -30,8 +30,8 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Maven Build
-                  identifier: maven_build
+                  name: Build Java App
+                  identifier: build_java
                   spec:
                     shell: Sh
                     command: |-
@@ -55,7 +55,6 @@ pipeline:
                       jfrog rt u \
                         "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
                         "harness-generic-local/java-apps/" \
-                        --url="https://rushiops.jfrog.io/artifactory" \
                         --access-token <+secrets.getValue("j-token")> \
                         --build-name <+pipeline.identifier> \
                         --build-number <+pipeline.sequenceId> \
