@@ -54,11 +54,3 @@ pipeline:
 
                       # Step 5: Upload the JAR to JFrog
                       jfrog rt u "greetings-1.0.0.jar" "harness-generic-local/java-apps/"
-              - step:
-                  type: ArtifactoryUpload
-                  name: ArtifactoryUpload_1
-                  identifier: ArtifactoryUpload_1
-                  spec:
-                    connectorRef: rushiopslocaldocker
-                    target: generic-local/java-apps/greetings-1.0.0.jar
-                    sourcePath: zenzbg-template/greetings/target/greetings-1.0.0.jar
