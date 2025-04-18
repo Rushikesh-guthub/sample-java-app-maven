@@ -35,22 +35,28 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |-
+                      #!/bin/bash
+
                       cd zenzbg-template/greetings
 
                       # Step 1: Build the project with Maven
-                      echo "Starting Maven Build"
+                      echo "🔨 Starting Maven Build..."
                       mvn clean install
 
                       # Step 2: Install JFrog CLI
-                      echo "Installing JFrog CLI"
+                      echo "⬇️ Installing JFrog CLI..."
                       curl -fL https://getcli.jfrog.io | sh
                       chmod +x jfrog
                       mv jfrog /usr/local/bin/jfrog
 
-                      # Step 3: Upload JAR to JFrog Artifactory
-                      echo "Uploading artifact to JFrog"
-                      jfrog rt u --url https://rushiops.jfrog.io/ \
-                                 --user "rushikesh.ghutke@neosoftmail.com" \
-                                 --password "Rushiops%40123" \
-                                 "target/greetings-1.0.0.jar" \
-                                 "harness-generic-local/java-apps/greetings-1.0.0.jar"
+                      # Step 3: Disable interactive mode in JFrog CLI
+                      export JFROG_CLI_OFFER_CONFIG=false
+
+                      # Step 4: Upload artifact to JFrog Artifactory
+                      echo "🚀 Uploading artifact to JFrog..."
+                      jfrog rt u \
+                        "target/greetings-1.0.0.jar" \
+                        "harness-generic-local/java-apps/greetings-1.0.0.jar" \
+                        --url=https://rushiops.jfrog.io/artifactory \
+                        --user="rushikesh.ghutke@neosoftmail.com" \
+                        --password="Rushiops@123"
