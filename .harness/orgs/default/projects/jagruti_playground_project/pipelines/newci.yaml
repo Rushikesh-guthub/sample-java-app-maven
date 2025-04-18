@@ -55,7 +55,8 @@ pipeline:
                       jfrog rt u \
                         "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
                         "harness-generic-local/java-apps/" \
-                        --access-token <+secrets.getValue("j-token")> \
+                        --url="https://rushiops.jfrog.io/artifactory" \
+                        --access-token <+secrets.getValue("jfrog_access_token")> \
                         --build-name <+pipeline.identifier> \
                         --build-number <+pipeline.sequenceId> \
                         --target-props "project=greetings;env=dev"
