@@ -43,7 +43,7 @@ pipeline:
                   name: Upload to JFrog Artifactory
                   identifier: upload_to_jfrog
                   spec:
-                    shell: Sh
+                    shell: Bash
                     command: |-
                       echo "⬇️ Installing JFrog CLI..."
                       curl -fL https://getcli.jfrog.io | sh
@@ -56,7 +56,7 @@ pipeline:
                         "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
                         "harness-generic-local/java-apps/" \
                         --url="https://rushiops.jfrog.io/artifactory" \
-                        --access-token <+secrets.getValue("jfrog_access_token")> \
+                        --access-token <+secrets.getValue("j-token")> \
                         --build-name <+pipeline.identifier> \
                         --build-number <+pipeline.sequenceId> \
                         --target-props "project=greetings;env=dev"
