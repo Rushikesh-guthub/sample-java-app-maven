@@ -51,6 +51,12 @@ pipeline:
                       # Step 4: Configure JFrog server (run this only once)
                       jfrog config add my-jfrog-server
                       # Follow prompts: enter your Artifactory URL, username, and password or API key
-
-                      # Step 5: Upload the JAR to JFrog
-                      jfrog rt u "greetings-1.0.0.jar" "harness-generic-local/java-apps/"
+                      # Set JFrog config non-interactively
+                      jf c add bunny99 \
+                        --url "$JFROG_URL" \
+                        --user "$JFROG_USER" \
+                        --apikey "$JFROG_API_KEY" \
+                        --interactive=false
+                       
+                      # Upload artifact
+                      jf rt u "greetings-1.0.0.jar" "harness-generic-local/"
