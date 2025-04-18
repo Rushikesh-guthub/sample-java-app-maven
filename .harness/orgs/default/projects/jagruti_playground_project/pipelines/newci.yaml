@@ -52,5 +52,5 @@ pipeline:
                       jfrog rt u --url https://rushiops.jfrog.io/ \
                                  --user "rushikesh.ghutke@neosoftmail.com" \
                                  --password "Rushiops@123" \
-                                 "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
+                                 "target/greetings-1.0.0.jar" \
                                  "harness-generic-local/java-apps/greetings-1.0.0.jar"
