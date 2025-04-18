@@ -36,8 +36,24 @@ pipeline:
                     shell: Sh
                     command: |-
                       cd zenzbg-template/greetings
+
+                      # Step 1: Build the project with Maven
                       echo "Starting Maven Build"
                       mvn clean install
+
+                      # Step 2: Install JFrog CLI
+                      curl -fL https://getcli.jfrog.io | sh
+                      sudo mv jfrog /usr/local/bin/
+
+                      # Step 3: Verify JFrog CLI installation
+                      jfrog --version
+
+                      # Step 4: Configure JFrog server (run this only once)
+                      jfrog config add my-jfrog-server
+                      # Follow prompts: enter your Artifactory URL, username, and password or API key
+
+                      # Step 5: Upload the JAR to JFrog
+                      jfrog rt u "target/greetings-1.0.0.jar" "generic-local/java-apps/greetings-1.0.0.jar"
               - step:
                   type: ArtifactoryUpload
                   name: ArtifactoryUpload_1
