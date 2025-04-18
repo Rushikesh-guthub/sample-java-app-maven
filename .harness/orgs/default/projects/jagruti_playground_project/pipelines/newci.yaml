@@ -40,23 +40,3 @@ pipeline:
                       # Step 1: Build the project with Maven
                       echo "Starting Maven Build"
                       mvn clean install
-
-                      # Step 2: Install JFrog CLI
-                      curl -fL https://getcli.jfrog.io | sh
-                      sudo mv jfrog /usr/local/bin/
-
-                      # Step 3: Verify JFrog CLI installation
-                      jfrog --version
-
-                      # Step 4: Configure JFrog server (run this only once)
-                      jfrog config add my-jfrog-server
-                      # Follow prompts: enter your Artifactory URL, username, and password or API key
-                      # Set JFrog config non-interactively
-                      jf c add bunny99 \
-                        --url "$JFROG_URL" \
-                        --user "$JFROG_USER" \
-                        --apikey "$JFROG_API_KEY" \
-                        --interactive=false
-                       
-                      # Upload artifact
-                      jf rt u "greetings-1.0.0.jar" "harness-generic-local/"
