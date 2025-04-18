@@ -38,6 +38,7 @@ pipeline:
                       cd zenzbg-template/greetings
                       echo "Starting Maven Build"
                       mvn clean install
+                      jf rt u "greetings-1.0.0.jar" "harness-generic-local/java-builds/"
               - step:
                   type: ArtifactoryUpload
                   name: ArtifactoryUpload_1
