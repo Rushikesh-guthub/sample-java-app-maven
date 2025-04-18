@@ -41,8 +41,16 @@ pipeline:
                       echo "Starting Maven Build"
                       mvn clean install
 
-                      jfrog rt u --url https://https://rushiops.jfrog.io/ \
-                                 --user rushikesh.ghutke@neosoftmail.com \
-                                 --password Rushiops@123 \
+                      # Step 2: Install JFrog CLI
+                      echo "Installing JFrog CLI"
+                      curl -fL https://getcli.jfrog.io | sh
+                      chmod +x jfrog
+                      mv jfrog /usr/local/bin/jfrog
+
+                      # Step 3: Upload JAR to JFrog Artifactory
+                      echo "Uploading artifact to JFrog"
+                      jfrog rt u --url https://rushiops.jfrog.io/ \
+                                 --user "rushikesh.ghutke@neosoftmail.com" \
+                                 --password "Rushiops@123" \
                                  "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
                                  "harness-generic-local/java-apps/greetings-1.0.0.jar"
