@@ -64,6 +64,28 @@ pipeline:
                           log:
                             level: info
               - step:
+                  type: Run
+                  name: Run_2
+                  identifier: Run_2
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "⬇️ Installing JFrog CLI..."
+                      curl -fL https://getcli.jfrog.io | sh
+                      chmod +x jfrog
+                      mv jfrog /usr/local/bin/jfrog
+                      export JFROG_CLI_OFFER_CONFIG=false
+
+                      echo "🚀 Uploading artifact to JFrog..."
+                      jfrog rt u \
+                        "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
+                        "harness-generic-local/java-apps/" \
+                        --url="https://rushiops.jfrog.io/artifactory" \
+                        --access-token <+secrets.getValue("j-token")> \
+                        --build-name <+pipeline.identifier> \
+                        --build-number <+pipeline.sequenceId> \
+                        --target-props "project=greetings;env=dev"
+              - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
                   identifier: BuildAndPushDockerRegistry_1
@@ -117,7 +139,7 @@ pipeline:
                           pwd
                           echo "Pulling image "
                           sudo docker pull 46990406/demo-harness:latest
-                          sudo docker stop demo-harness 
+                          sudo docker stop demo-harness
                           sudo docker rm demo-harness
                           sudo docker run -d --name demo-harness -p 8080:8080 46990406/demo-harness:latest
                           EOF 
