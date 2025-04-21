@@ -6,6 +6,80 @@ pipeline:
   tags: {}
   stages:
     - stage:
+        name: build
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Owasp
+                  name: Owasp_1
+                  identifier: Owasp_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+              - step:
+                  type: Run
+                  name: build the artifact
+                  identifier: build_the_artifact
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "🔨 Starting Maven Build..."
+                      cd zenzbg-template/greetings
+                      mvn clean install
+              - step:
+                  type: Run
+                  name: Uploading artifact to JFrog
+                  identifier: Uploading_artifact_to_JFrog
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "⬇️ Installing JFrog CLI..."
+                      curl -fL https://getcli.jfrog.io | sh
+                      chmod +x jfrog
+                      mv jfrog /usr/local/bin/jfrog
+                      export JFROG_CLI_OFFER_CONFIG=false
+
+                      echo "🚀 Uploading artifact to JFrog..."
+                      jfrog rt u \
+                        "zenzbg-template/greetings/target/greetings-1.0.0.jar" \
+                        "harness-generic-local/java-apps/" \
+                        --url="https://rushiops.jfrog.io/artifactory" \
+                        --access-token <+secrets.getValue("j-token")> \
+                        --build-name <+pipeline.identifier> \
+                        --build-number <+pipeline.sequenceId> \
+                        --target-props "project=greetings;env=dev"
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: dockerconnector
+                    repo: rushiops/demo-harness
+                    tags:
+                      - latest
+                    dockerfile: zenzbg-template/greetings/Dockerfile
+                    context: zenzbg-template/greetings
+    - stage:
         name: deployment
         identifier: deployment
         description: ""
@@ -52,3 +126,8 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+  properties:
+    ci:
+      codebase:
+        connectorRef: gitconnector
+        build: <+input>
