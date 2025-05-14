@@ -10,7 +10,7 @@ public class HelloController {
     @RequestMapping("/")
     public String index() {
 		System.out.println("This is simple Spring Boot project");
-        return "Hello World. Docker deployments to AKS. .some changes...\n";
+        return "Hello World. This is running on container.\n";
     }
     
 }
